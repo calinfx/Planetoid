@@ -3,14 +3,14 @@
 <script src="https://unpkg.com/aframe-super-hands-component@3.0.0/dist/super-hands.min.js"></script>
 
 <a-scene>
-    <a-camera position="0 1.6 2" look-controls="enabled: false">
+    <a-camera position="0 1.6 2">
         <a-entity cursor="rayOrigin: mouse" raycaster="objects: .collidable; far: 100" super-hands></a-entity>
     </a-camera>
 
     <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
     <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
 
-    <a-sky color="#660033"></a-sky>
+    <a-sky color="#331144"></a-sky>
     <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
     <a-box 
@@ -23,3 +23,8 @@
 </a-scene>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+The issue you were facing with camera movement on a phone is a common problem when using A-Frame with external components that can conflict with the default `look-controls`, which is responsible for using the gyroscope for orientation. This video explains how to add `device-orientation-permission-ui` to your scene, which is often a necessary step to enable gyroscope controls on mobile devices, especially for iOS. [How to use superhands with mouse](https://www.youtube.com/watch?v=vQ85u3dzmZY).
+http://googleusercontent.com/youtube_content/9 *YouTube video views will be stored in your YouTube History, and your data will be stored and used by YouTube according to its [Terms of Service](https://www.youtube.com/static?template=terms)*
+
+

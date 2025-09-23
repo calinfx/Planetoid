@@ -10,6 +10,7 @@
 // 5.00 Player
 // 6.00 Controls
 // 7.00 Animation Loop
+// 8.00 Debugging Panel
 
 // - - - >> 1.00 - Scene Setup
 const scene = new THREE.Scene();
@@ -192,6 +193,48 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// - - - >> 8.00 - Debugging Panel
+const debugPanel = document.createElement('div');
+debugPanel.id = 'debug-panel';
+debugPanel.style.cssText = `
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: red;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 10px;
+  max-width: 90%;
+  max-height: 50%;
+  overflow: auto;
+  z-index: 100;
+`;
+document.body.appendChild(debugPanel);
+
+window.addEventListener('error', (e) => {
+  debugPanel.textContent = `Error: ${e.message}`;
+});
+
+function logToDebugPanel(message) {
+  const p = document.createElement('p');
+  p.textContent = message;
+  debugPanel.appendChild(p);
+}
+
+// Check for libraries and log their status
+if (typeof THREE === 'undefined') {
+  logToDebugPanel('THREE.js is not loaded.');
+}
+if (typeof CANNON === 'undefined') {
+  logToDebugPanel('CANNON-es is not loaded.');
+}
+if (typeof Howler === 'undefined') {
+  logToDebugPanel('Howler.js is not loaded.');
+}
+
+logToDebugPanel('Script loaded and running.');
 
 // https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js
 // https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js

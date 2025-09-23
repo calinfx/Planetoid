@@ -1,20 +1,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/aframe-click-drag-component@3.0.1/dist/aframe-click-drag-component.min.js"></script>
+<script src="https://unpkg.com/aframe-super-hands-component@3.0.0/dist/super-hands.min.js"></script>
 
 <a-scene>
-    <a-camera position="0 1.6 4">
-        <a-cursor></a-cursor>
+    <a-camera position="0 1.6 2" look-controls="enabled: false">
+        <a-entity cursor="rayOrigin: mouse" raycaster="objects: .collidable; far: 100" super-hands></a-entity>
     </a-camera>
 
     <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
     <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
 
-    <a-sky color="#331144"></a-sky>
+    <a-sky color="#660033"></a-sky>
     <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
     <a-box 
-        click-drag
+        class="collidable"
+        grabbable
         position="0 0.5 -3" 
         rotation="0 45 0" 
         color="#800080">

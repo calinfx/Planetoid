@@ -15,7 +15,7 @@ renderer.setClearColor(0x000000); // Set background to black
 
 // - - - >> 2.00 - Geometry and Mesh
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green color
+const material = new THREE.MeshNormalMaterial(); // Green color
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
@@ -29,4 +29,5 @@ function animate() {
 }
 animate();
 // 3.00.00
+
 

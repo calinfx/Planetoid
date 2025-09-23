@@ -1,14 +1,25 @@
-<html>
-  <head>
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
-      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-      <a-sky color="#331144"></a-sky>
-    </a-scene>
-  </body>
-</html>
+<script src="https://unpkg.com/aframe-click-drag-component"></script>
+<script>
+    // This part is crucial for the component to work
+    AFRAME.registerComponent("click-drag", window.AFRAME_CLICK_DRAG_COMPONENT);
+</script>
+
+<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+
+<a-scene>
+  <a-camera look-controls-enabled="false" position="0 1.6 4">
+    <a-cursor></a-cursor>
+  </a-camera>
+
+  <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
+  <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
+
+  <a-sky color="#222222"></a-sky>
+  <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+
+<a-box click-drag position="-1 0.5 -3" rotation="0 45 0" color="#45B6FE"></a-box>
+<a-sphere click-drag position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+<a-cylinder click-drag position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+
+</a-scene>
+<script src="https://unpkg.com/aframe-click-drag-component"></script>

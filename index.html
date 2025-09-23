@@ -1,8 +1,9 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-event-set-component@4.2.1/dist/aframe-event-set-component.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aframe-click-drag-component@3.0.1/dist/aframe-click-drag-component.min.js"></script>
 
 <a-scene>
-    <a-camera position="0 1.6 2">
+    <a-camera position="0 1.6 4">
         <a-cursor></a-cursor>
     </a-camera>
 
@@ -13,9 +14,11 @@
     <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
     <a-box 
-        drag-and-drop 
+        click-drag
         position="0 0.5 -3" 
         rotation="0 45 0" 
         color="#800080">
     </a-box>
 </a-scene>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

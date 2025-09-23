@@ -11,7 +11,7 @@
 // 6.00 Controls
 // 7.00 Animation Loop
 
-- - - >> 1.00 - Scene Setup
+// - - - >> 1.00 - Scene Setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -23,14 +23,13 @@ container.id = 'game-container';
 document.body.appendChild(container);
 
 container.appendChild(renderer.domElement);
-
-- - - >> 1.00.00
-- - - >> 2.00 - Physics World
+// 1.00.00
+// - - - >> 2.00 - Physics World
 const world = new CANNON.World({
   gravity: new CANNON.Vec3(0, 0, 0),
 });
 
-- - - >> 3.00 - Materials and Lighting
+// - - - >> 3.00 - Materials and Lighting
 const desertWarmth = new THREE.Color(0xd2b48c);
 const sandMaterial = new THREE.MeshStandardMaterial({ color: desertWarmth });
 const playerMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513, flatShading: true });
@@ -42,8 +41,8 @@ directionalLight.position.set(5, 10, 7.5);
 scene.add(directionalLight);
 renderer.setClearColor(0x36454F); // Dark slate gray for night sky
 
-- - - >> 3.00.00
-- - - >> 4.00 - Game Objects
+// 3.00.00
+// - - - >> 4.00 - Game Objects
 const sphereRadius = 50;
 const sphereGeometry = new THREE.SphereGeometry(sphereRadius, 32, 32);
 
@@ -69,8 +68,8 @@ const sphere2Body = new CANNON.Body({
 sphere2Body.position.copy(sphere2Mesh.position);
 world.addBody(sphere2Body);
 
-- - - >> 4.00.00
-- - - >> 5.00 - Player
+// 4.00.00
+// - - - >> 5.00 - Player
 const playerRadius = 1;
 const playerMesh = new THREE.Mesh(new THREE.SphereGeometry(playerRadius, 16, 16), playerMaterial);
 scene.add(playerMesh);
@@ -86,8 +85,8 @@ world.addBody(playerBody);
 camera.position.set(0, sphereRadius + playerRadius + 5, 10);
 camera.lookAt(playerMesh.position);
 
-- - - >> 5.00.00
-- - - >> 6.00 - Controls
+// 5.00.00
+// - - - >> 6.00 - Controls
 const leftJoystick = document.createElement('div');
 leftJoystick.id = 'joystick-left';
 leftJoystick.innerHTML = '<div class="stick"></div>';
@@ -140,8 +139,8 @@ setupJoystick(leftJoystick, leftStick, (x, y) => {
 setupJoystick(rightJoystick, rightStick, (x, y) => {
   lookVector.set(x, y);
 });
-- - - >> 6.00.00
-- - - >> 7.00 - Animation Loop
+// 6.00.00
+// - - - >> 7.00 - Animation Loop
 const clock = new THREE.Clock();
 function animate() {
   requestAnimationFrame(animate);

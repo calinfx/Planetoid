@@ -3,11 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Draggable Chessboard</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Draggable A-Frame Scene</title>
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
-    <script src="script.js"></script>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-drag-component/dist/aframe-drag-component.min.js"></script>
+
+    <a-scene>
+        <a-camera position="0 1.6 4">
+            <a-cursor></a-cursor>
+        </a-camera>
+        <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
+        <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
+        
+        <a-sky color="#2C3E50"></a-sky>
+        <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#445566"></a-plane>
+
+        <a-box class="draggable" position="-1.5 0.5 -2" color="#F44336" drag></a-box>
+        <a-box class="draggable" position="-0.5 0.5 -2" color="#FFEB3B" drag></a-box>
+        <a-box class="draggable" position="0.5 0.5 -2" color="#03A9F4" drag></a-box>
+        <a-box class="draggable" position="1.5 0.5 -2" color="#4CAF50" drag></a-box>
+
+        <a-box class="draggable" position="-1.5 0.5 2" color="#F44336" drag></a-box>
+        <a-box class="draggable" position="-0.5 0.5 2" color="#FFEB3B" drag></a-box>
+        <a-box class="draggable" position="0.5 0.5 2" color="#03A9F4" drag></a-box>
+        <a-box class="draggable" position="1.5 0.5 2" color="#4CAF50" drag></a-box>
+    </a-scene>
 </body>
 </html>

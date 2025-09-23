@@ -9,25 +9,28 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-renderer.setClearColor(0x000000); // Set background to black
-
+renderer.setClearColor(0x0000ff); // Clear color is now a bright blue
 // 1.00.00
 
 // - - - >> 2.00 - Geometry and Mesh
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshNormalMaterial(); // Green color
+const material = new THREE.MeshNormalMaterial();
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
 camera.position.z = 5;
+
 // 2.00.00
 
 // - - - >> 3.00 - Animation Loop
 function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+
+  // Rotate the cube so it's always visible
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  renderer.render(scene, camera);
 }
 animate();
 // 3.00.00
-
-

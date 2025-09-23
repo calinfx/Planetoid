@@ -1,25 +1,58 @@
-<a-scene>
-    <a-cone
-        position="0 0.5 0"         height="0.5"               radius-bottom="1"          radius-top="0.8"           segments-radial="4"        color="#8B0000">           </a-cone>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sliced Pyramid</title>
+</head>
+<body>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
 
-    <a-cone
-        position="0 1 0"           height="0.5"
-        radius-bottom="0.8"
-        radius-top="0.6"
-        segments-radial="4"
-        color="#FF4500">           </a-cone>
+    <a-scene>
+        <a-camera position="0 1.6 4"></a-camera>
+        <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
+        <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
+        
+        <a-sky color="#2C3E50"></a-sky>
+        <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#445566"></a-plane>
 
-    <a-cone
-        position="0 1.5 0"         height="0.5"
-        radius-bottom="0.6"
-        radius-top="0.4"
-        segments-radial="4"
-        color="#FFD700">           </a-cone>
+        <a-entity position="0 0 -4">
+            <a-cone
+                position="0 0.25 0"
+                height="0.5"
+                radius-bottom="1"
+                radius-top="0.8"
+                segments-radial="4"
+                color="#8B0000">
+            </a-cone>
 
-    <a-cone
-        position="0 2 0"           height="0.5"
-        radius-bottom="0.4"
-        radius-top="0.1"           segments-radial="4"
-        color="#FFFFFF">           </a-cone>
+            <a-cone
+                position="0 0.75 0"
+                height="0.5"
+                radius-bottom="0.8"
+                radius-top="0.6"
+                segments-radial="4"
+                color="#FF4500">
+            </a-cone>
 
-</a-scene>
+            <a-cone
+                position="0 1.25 0"
+                height="0.5"
+                radius-bottom="0.6"
+                radius-top="0.4"
+                segments-radial="4"
+                color="#FFD700">
+            </a-cone>
+
+            <a-cone
+                position="0 1.75 0"
+                height="0.5"
+                radius-bottom="0.4"
+                radius-top="0.1"
+                segments-radial="4"
+                color="#7D3C98">
+            </a-cone>
+        </a-entity>
+    </a-scene>
+</body>
+</html>

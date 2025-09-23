@@ -1,25 +1,57 @@
-<script src="https://unpkg.com/aframe-click-drag-component"></script>
+<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
 <script>
-    // This is crucial for the component to work
-    AFRAME.registerComponent("click-drag", window.AFRAME_CLICK_DRAG_COMPONENT);
+    // Component to make an object draggable on the ground plane (X and Z axes)
+    AFRAME.registerComponent('drag-on-plane', {
+        init: function() {
+            this.dragging = false;
+            this.initialPosition = new THREE.Vector3();
+            this.initialMousePosition = new THREE.Vector2();
+
+            // Set a higher render order to make sure the object is in front
+            this.el.object3D.renderOrder = 99;
+            this.el.components.material.material.depthTest = false;
+
+            this.el.addEventListener('mousedown', (e) => {
+                this.dragging = true;
+                this.el.setAttribute('color', '#EF2D5E'); // Change color to show it's selected
+                this.initialPosition.copy(this.el.object3D.position);
+                this.initialMousePosition.set(e.clientX, e.clientY);
+                e.stopPropagation(); // Stop camera from moving
+            });
+
+            this.el.addEventListener('mouseup', () => {
+                this.dragging = false;
+                this.el.setAttribute('color', '#45B6FE'); // Revert color
+            });
+        },
+        tick: function() {
+            if (this.dragging) {
+                const mouseDeltaX = this.initialMousePosition.x - event.clientX;
+                const mouseDeltaY = this.initialMousePosition.y - event.clientY;
+
+                // Adjust movement sensitivity
+                const movementX = -mouseDeltaX * 0.005;
+                const movementY = mouseDeltaY * 0.005;
+
+                // Move the object on the X and Z axes
+                this.el.object3D.position.x = this.initialPosition.x + movementX;
+                this.el.object3D.position.z = this.initialPosition.z + movementY;
+            }
+        }
+    });
 </script>
 
-<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-
+---
+### The Scene
+```html
 <a-scene>
-  <a-camera position="0 1.6 4">
-    <a-cursor></a-cursor>
-  </a-camera>
+    <a-camera position="0 1.6 4"></a-camera>
 
-  <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
-  <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
+    <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
+    <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
 
-  <a-sky color="#221144"></a-sky>
-  <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
+    <a-sky color="#331144"></a-sky>
+    <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
-<a-box click-drag position="-1 0.5 -3" rotation="0 45 0" color="#45B6FE"></a-box>
-<a-sphere click-drag position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
-<a-cylinder click-drag position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-
+    <a-box drag-on-plane position="0 0.5 -3" rotation="0 45 0" color="#45B6FE"></a-box>
 </a-scene>
-<script src="https://unpkg.com/aframe-click-drag-component"></script>

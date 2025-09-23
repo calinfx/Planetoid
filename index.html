@@ -1,72 +1,13 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-
-<a-scene>
-    <a-camera position="0 1.6 4">
-        <a-cursor raycaster="objects: #my-box"></a-cursor>
-    </a-camera>
-
-    <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
-    <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
-
-    <a-sky color="#331144"></a-sky>
-    <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#994477"></a-plane>
-
-    <a-box
-        id="my-box"
-        position="0 0.5 -3"
-        rotation="0 45 0"
-        color="#800080"
-        class="draggable">
-    </a-box>
-</a-scene>
-
-<script>
-    // - - - >> 2.00 - Drag-and-Drop Logic
-    AFRAME.registerComponent('draggable', {
-        init: function() {
-            this.el.addEventListener('mousedown', this.onMouseDown.bind(this));
-            this.el.addEventListener('mouseup', this.onMouseUp.bind(this));
-            this.el.addEventListener('raycaster-intersected', this.onIntersect.bind(this));
-            this.el.addEventListener('raycaster-intersected-cleared', this.onIntersectClear.bind(this));
-            
-            this.dragging = false;
-            this.isIntersected = false;
-        },
-        
-        onMouseDown: function(evt) {
-            this.dragging = true;
-            this.lastPosition = evt.detail.intersection.point;
-        },
-        // 2.00.00
-        
-        onMouseUp: function() {
-            this.dragging = false;
-        },
-        
-        onIntersect: function() {
-            this.isIntersected = true;
-        },
-        
-        onIntersectClear: function() {
-            this.isIntersected = false;
-        },
-        
-        tick: function() {
-            if (this.dragging && this.isIntersected) {
-                var newPosition = new THREE.Vector3();
-                var raycaster = this.el.sceneEl.components.raycaster.raycaster;
-                raycaster.intersectObjects(this.el.sceneEl.object3D.children, true, newPosition);
-                // 2.00.01
-                
-                if (newPosition.length() > 0) {
-                    var deltaPosition = newPosition.sub(this.lastPosition);
-                    this.el.object3D.position.add(deltaPosition);
-                    this.lastPosition = newPosition;
-                }
-            }
-        }
-    });
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draggable Chessboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+    <script src="script.js"></script>
+</body>
+</html>

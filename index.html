@@ -7,9 +7,8 @@
 </head>
 <body>
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-drag-component/dist/aframe-drag-component.min.js"></script>
 
-    <a-scene>
+    <a-scene drag-handler>
         <a-camera position="0 1.6 4">
             <a-cursor></a-cursor>
         </a-camera>
@@ -19,15 +18,66 @@
         <a-sky color="#2C3E50"></a-sky>
         <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#445566"></a-plane>
 
-        <a-box class="draggable" position="-1.5 0.5 -2" color="#F44336" drag></a-box>
-        <a-box class="draggable" position="-0.5 0.5 -2" color="#FFEB3B" drag></a-box>
-        <a-box class="draggable" position="0.5 0.5 -2" color="#03A9F4" drag></a-box>
-        <a-box class="draggable" position="1.5 0.5 -2" color="#4CAF50" drag></a-box>
+        <a-box class="draggable" position="-1.5 0.5 -2" color="#F44336"></a-box>
+        <a-box class="draggable" position="-0.5 0.5 -2" color="#FFEB3B"></a-box>
+        <a-box class="draggable" position="0.5 0.5 -2" color="#03A9F4"></a-box>
+        <a-box class="draggable" position="1.5 0.5 -2" color="#4CAF50"></a-box>
 
-        <a-box class="draggable" position="-1.5 0.5 2" color="#F44336" drag></a-box>
-        <a-box class="draggable" position="-0.5 0.5 2" color="#FFEB3B" drag></a-box>
-        <a-box class="draggable" position="0.5 0.5 2" color="#03A9F4" drag></a-box>
-        <a-box class="draggable" position="1.5 0.5 2" color="#4CAF50" drag></a-box>
+        <a-box class="draggable" position="-1.5 0.5 2" color="#F44336"></a-box>
+        <a-box class="draggable" position="-0.5 0.5 2" color="#FFEB3B"></a-box>
+        <a-box class="draggable" position="0.5 0.5 2" color="#03A9F4"></a-box>
+        <a-box class="draggable" position="1.5 0.5 2" color="#4CAF50"></a-box>
     </a-scene>
+
+    <script>
+        // - - - >> 1.00 - Custom Drag Handler Component
+        AFRAME.registerComponent('drag-handler', {
+            init: function () {
+                this.isDragging = false;
+                this.draggedEl = null;
+                this.camera = this.el.querySelector('a-camera');
+                
+                this.el.addEventListener('mousedown', this.onMouseDown.bind(this));
+                this.el.addEventListener('mouseup', this.onMouseUp.bind(this));
+            },
+            // 1.00.00
+            onMouseDown: function (evt) {
+                if (evt.target.classList.contains('draggable')) {
+                    this.isDragging = true;
+                    this.draggedEl = evt.target;
+                    
+                    this.el.addState('grabbing');
+                    this.draggedEl.setAttribute('material', 'emissive', '#999');
+                    this.draggedEl.setAttribute('material', 'emissiveIntensity', 0.5);
+                }
+            },
+            
+            // 1.00.01
+            onMouseUp: function (evt) {
+                this.isDragging = false;
+                if (this.draggedEl) {
+                    this.el.removeState('grabbing');
+                    this.draggedEl.setAttribute('material', 'emissive', '#000');
+                    this.draggedEl = null;
+                }
+            },
+            
+            // 1.00.02
+            tick: function () {
+                if (!this.isDragging || !this.draggedEl) { return; }
+                
+                let cursor = this.camera.querySelector('a-cursor');
+                if (cursor) {
+                    let raycaster = cursor.components.raycaster.raycaster;
+                    let intersections = raycaster.intersectObjects(this.el.object3D.children, true);
+                    
+                    if (intersections.length > 0) {
+                        let point = intersections[0].point;
+                        this.draggedEl.object3D.position.copy(point);
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

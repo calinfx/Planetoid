@@ -32,8 +32,10 @@ const world = new CANNON.World({
 
 // - - - >> 3.00 - Materials and Lighting
 const desertWarmth = new THREE.Color(0xd2b48c);
-const sandMaterial = new THREE.MeshStandardMaterial({ color: desertWarmth });
-const playerMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513, flatShading: true });
+
+const sandMaterial = new THREE.MeshBasicMaterial({ color: desertWarmth });
+const playerMaterial = new THREE.MeshBasicMaterial({ color: 0x8b4513, flatShading: true });
+
 
 const light = new THREE.AmbientLight(0x404040, 3);
 scene.add(light);
@@ -239,4 +241,5 @@ logToDebugPanel('Script loaded and running.');
 // https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js
 // https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.min.js
 // https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js
+
 

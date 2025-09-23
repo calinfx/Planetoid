@@ -1,10 +1,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-super-hands-component@3.0.0/dist/super-hands.min.js"></script>
 
 <a-scene>
-    <a-camera position="0 1.6 2">
-        <a-entity cursor="rayOrigin: mouse" raycaster="objects: .collidable; far: 100" super-hands></a-entity>
+    <a-camera position="0 1.6 4">
+        <a-cursor raycaster="objects: #my-box"></a-cursor>
     </a-camera>
 
     <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
@@ -13,18 +12,61 @@
     <a-sky color="#331144"></a-sky>
     <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#7BC8A4"></a-plane>
 
-    <a-box 
-        class="collidable"
-        grabbable
-        position="0 0.5 -3" 
-        rotation="0 45 0" 
-        color="#800080">
+    <a-box
+        id="my-box"
+        position="0 0.5 -3"
+        rotation="0 45 0"
+        color="#800080"
+        class="draggable">
     </a-box>
 </a-scene>
 
+<script>
+    // - - - >> 2.00 - Drag-and-Drop Logic
+    AFRAME.registerComponent('draggable', {
+        init: function() {
+            this.el.addEventListener('mousedown', this.onMouseDown.bind(this));
+            this.el.addEventListener('mouseup', this.onMouseUp.bind(this));
+            this.el.addEventListener('raycaster-intersected', this.onIntersect.bind(this));
+            this.el.addEventListener('raycaster-intersected-cleared', this.onIntersectClear.bind(this));
+            
+            this.dragging = false;
+            this.isIntersected = false;
+        },
+        
+        onMouseDown: function(evt) {
+            this.dragging = true;
+            this.lastPosition = evt.detail.intersection.point;
+        },
+        // 2.00.00
+        
+        onMouseUp: function() {
+            this.dragging = false;
+        },
+        
+        onIntersect: function() {
+            this.isIntersected = true;
+        },
+        
+        onIntersectClear: function() {
+            this.isIntersected = false;
+        },
+        
+        tick: function() {
+            if (this.dragging && this.isIntersected) {
+                var newPosition = new THREE.Vector3();
+                var raycaster = this.el.sceneEl.components.raycaster.raycaster;
+                raycaster.intersectObjects(this.el.sceneEl.object3D.children, true, newPosition);
+                // 2.00.01
+                
+                if (newPosition.length() > 0) {
+                    var deltaPosition = newPosition.sub(this.lastPosition);
+                    this.el.object3D.position.add(deltaPosition);
+                    this.lastPosition = newPosition;
+                }
+            }
+        }
+    });
+</script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-The issue you were facing with camera movement on a phone is a common problem when using A-Frame with external components that can conflict with the default `look-controls`, which is responsible for using the gyroscope for orientation. This video explains how to add `device-orientation-permission-ui` to your scene, which is often a necessary step to enable gyroscope controls on mobile devices, especially for iOS. [How to use superhands with mouse](https://www.youtube.com/watch?v=vQ85u3dzmZY).
-http://googleusercontent.com/youtube_content/9 *YouTube video views will be stored in your YouTube History, and your data will be stored and used by YouTube according to its [Terms of Service](https://www.youtube.com/static?template=terms)*
-
-

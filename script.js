@@ -370,6 +370,6 @@ logDebug('Initializing game...');
 setTimeout(() => {
     logDebug('Forcing loader hide. Game should be running.');
     loaderScreen.style.display = 'none';
-}, 5000); // 5-second timeout to ensure loader hides.
+}, 5000);
 
 // https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js

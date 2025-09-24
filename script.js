@@ -15,7 +15,7 @@
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
 
 // 1.00.00
-const GAME_VERSION = 'v0.01';
+const GAME_VERSION = 'Planetoid v.01 alpha';
 const scene = new THREE.Scene();
 
 // 1.00.01
@@ -346,7 +346,7 @@ animate();
 const loaderScreen = document.getElementById('loading-screen');
 const debugOutput = document.getElementById('debug-output');
 const versionDisplay = document.getElementById('version-display');
-versionDisplay.textContent = `Version: ${GAME_VERSION}`;
+versionDisplay.textContent = GAME_VERSION;
 // 8.00.01
 function logDebug(message) {
     if (debugOutput) {

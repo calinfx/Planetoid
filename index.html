@@ -2,126 +2,219 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Pyramid Control</title>
+    <title>Hexolon PWA</title>
     <style>
-        body { margin: 0; overflow: hidden; }
-        .controls {
+        body, html {
+            /* 1.00.00 */
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #0a001a;
+            font-family: sans-serif;
+            color: white;
+        }
+
+        #loading-screen {
+            /* 1.00.01 */
             position: fixed;
-            bottom: 10px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #00FFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 999;
+        }
+
+        #loader-content {
+            /* 1.00.02 */
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #debug-output {
+            /* 1.00.03 */
+            margin-top: 20px;
+            width: 300px;
+            height: 150px;
+            overflow-y: scroll;
+            border: 1px solid #00FFFF;
+            padding: 5px;
+            font-family: monospace;
+            font-size: 0.8em;
+            text-align: left;
+        }
+        #debug-output::-webkit-scrollbar {
+            display: none;
+        }
+        #version-display {
+            /* 1.00.04 */
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #E0BBE4;
+            font-size: 1em;
+            font-family: monospace;
+            z-index: 100;
+        }
+
+        #inventory-ui {
+            /* 1.00.05 */
+            position: fixed;
+            bottom: 130px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
+            display: none;
+            grid-template-columns: repeat(6, 35px);
+            grid-template-rows: repeat(2, 35px);
+            gap: 3px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 3px;
             border-radius: 5px;
-            font-family: sans-serif;
-            z-index: 1000;
+            z-index: 100;
+        }
+
+        #inventory-ui div {
+            /* 1.00.06 */
+            width: 35px;
+            height: 35px;
+            border: 2px solid #8A2BE2;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #E0BBE4;
+            font-size: 0.7em;
+            font-family: monospace;
+        }
+
+        #inventory-toggle {
+            /* 1.00.07 */
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #8A2BE2;
+            border: 2px solid #4a008a;
+            z-index: 102;
+            cursor: pointer;
+        }
+
+        #crosshair {
+            /* 1.00.08 */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 2px;
+            background: #00FFFF;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+        }
+
+        #joystick-container {
+            /* 1.00.09 */
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            z-index: 101;
+        }
+
+        #move-joystick, #look-joystick {
+            /* 1.00.10 */
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: rgba(138, 43, 226, 0.4);
+            border: 2px solid #8A2BE2;
+            position: relative;
+        }
+
+        #move-joystick::after, #look-joystick::after {
+            /* 1.00.11 */
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            background-color: #8A2BE2;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 5px #E0BBE4;
+        }
+
+        #button-container {
+            /* 1.00.12 */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            width: 90%; /* Adjust width to be responsive */
-            max-width: 400px; /* Max width to prevent it from getting too big on large screens */
+            align-items: flex-end;
+            gap: 15px;
+            z-index: 101;
         }
-        .control-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .controls button {
-            padding: 4px 8px; /* Smaller padding */
-            border: none;
-            border-radius: 3px;
-            background-color: #007bff;
-            color: white;
+
+        #jump-button {
+            /* 1.00.13 */
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #FF0000;
+            border: 2px solid #8B0000;
+            z-index: 102;
             cursor: pointer;
-            font-size: 12px; /* Smaller font size */
         }
-        .controls button:hover {
-            background-color: #0056b3;
+
+        #jetpack-button {
+            /* 1.00.14 */
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #8B0000;
+            border: 2px solid #4B0000;
+            z-index: 102;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="controls">
-        <div class="control-row">
-            <span>Pyramid Sides (Segments):</span>
-            <div>
-                <button onclick="changeSegments(-1)">-</button>
-                <button onclick="changeSegments(1)">+</button>
-            </div>
-        </div>
-        
-        <div class="control-row">
-            <span>Pyramid Height:</span>
-            <div>
-                <button onclick="changeHeight(-1)">-</button>
-                <button onclick="changeHeight(1)">+</button>
-            </div>
-        </div>
-
-        <div class="control-row">
-            <span>Step Size: <span id="stepSizeDisplay">1</span></span>
-            <div>
-                <button onclick="changeStepSize(-1)">-</button>
-                <button onclick="changeStepSize(1)">+</button>
-            </div>
+    <div id="loading-screen">
+        <div id="loader-content">
+            <h2 id="loader-title">Loading...</h2>
+            <div id="debug-output"></div>
         </div>
     </div>
-
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-
-    <a-scene>
-        <a-camera position="0 1.6 4"></a-camera>
-        <a-entity light="type: ambient; color: #444; intensity: 1"></a-entity>
-        <a-entity light="type: directional; color: #FFF; intensity: 0.5" position="-1 1 1"></a-entity>
-        
-        <a-sky color="#2C3E50"></a-sky>
-        <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#445566"></a-plane>
-
-        <a-cone
-            id="dynamicPyramid"
-            position="0 1 0"
-            height="2"
-            radius-bottom="1"
-            radius-top="0"
-            segments-radial="4"
-            color="#FF4500">
-        </a-cone>
-    </a-scene>
-
-    <script>
-        let currentStepSize = 1;
-
-        function getPyramid() {
-            return document.getElementById('dynamicPyramid');
-        }
-
-        function changeSegments(direction) {
-            const pyramid = getPyramid();
-            if (!pyramid) return;
-
-            let segments = parseInt(pyramid.getAttribute('segments-radial'));
-            segments += direction * currentStepSize;
-            segments = Math.max(3, segments); // Minimum 3 segments for a triangle
-            pyramid.setAttribute('segments-radial', segments);
-        }
-
-        function changeHeight(direction) {
-            const pyramid = getPyramid();
-            if (!pyramid) return;
-
-            let height = parseFloat(pyramid.getAttribute('height'));
-            height += direction * currentStepSize * 0.1; // Smaller step for height
-            height = Math.max(0.1, height); // Minimum height
-            pyramid.setAttribute('height', height);
-        }
-
-        function changeStepSize(direction) {
-            currentStepSize += direction;
-            currentStepSize = Math.max(1, currentStepSize); // Minimum step size of 1
-            document.getElementById('stepSizeDisplay').innerText = currentStepSize;
-        }
-    </script>
+    <div id="version-display"></div>
+    <div id="inventory-ui"></div>
+    <div id="inventory-toggle"></div>
+    <div id="crosshair"></div>
+    <div id="joystick-container">
+        <div id="move-joystick"></div>
+        <div id="look-joystick"></div>
+    </div>
+    <div id="button-container">
+        <div id="jump-button"></div>
+        <div id="jetpack-button"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

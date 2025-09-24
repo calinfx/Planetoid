@@ -1,8 +1,8 @@
-// Planetoid v.04 Alpha
+// Planetoid v.06 Alpha
 /*
     Table of Contents:
     1.00 - Initialization and Scene Setup
-    2.00 - Planetoid Class Definition and Generation
+    2.00 - Placeholder Geometry and Scene Objects
     3.00 - Lighting, Materials, and Post-Processing
     4.00 - Inventory System UI and Logic
     5.00 - Phone Controls and Input
@@ -15,19 +15,13 @@
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
 
 // 1.00.00
-const GAME_VERSION = 'Planetoid v.04 Alpha';
 const scene = new THREE.Scene();
 let camera, renderer;
 
-// 1.00.01 - New init function
+// 1.00.01
 function init() {
     try {
-        const loaderTitle = document.getElementById('loader-title');
-        if (loaderTitle) {
-          loaderTitle.textContent = `Loading ${GAME_VERSION}...`;
-        }
-
-        logDebug(`${GAME_VERSION} loading...`);
+        logDebug('Planetoid v.06 Alpha loading...');
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
         camera.rotation.order = "YXZ";
 
@@ -53,63 +47,17 @@ function init() {
         console.error('Initialization failed:', e);
     }
 }
-
-// 1.00.02 - Call init() at the start
+// 1.00.02
 init();
 
-// - - - >> 2.00 - Planetoid Class Definition and Generation
-// 2.00.00 - A simple Perlin noise function for height variation
-function perlinNoise(x, y, z) {
-    const n = Math.sin(x * 12.9898 + y * 78.233 + z * 5.768) * 43758.5453;
-    return n - Math.floor(n);
-}
-// 2.00.01 - Planetoid Class
-class Planetoid {
-    constructor(radius, subdivisionLevel, position) {
-        this.radius = radius;
-        this.subdivisionLevel = subdivisionLevel;
-        this.group = new THREE.Group();
-        this.group.position.copy(position);
-        scene.add(this.group);
-        this.blocks = [];
-        this.generate();
-    }
-// 2.00.02
-    generate() {
-        try {
-            logDebug('Generating planetoid...');
-            const icosahedron = new THREE.IcosahedronGeometry(this.radius, this.subdivisionLevel);
-            const vertices = icosahedron.vertices;
-            const blockRadius = this.radius * 0.05;
-            const blockHeight = this.radius * 0.05;
-            const hexGeometry = new THREE.CylinderGeometry(blockRadius, blockRadius * 0.9, blockHeight, 6, 1, false);
-            const blockPositions = new Set();
-            const colors = [0x8A2BE2, 0x4B0082, 0x4169E1, 0x40E0D0, 0x00FFFF, 0x32CD32, 0xFFA500, 0xFF00FF];
-// 2.00.03
-            vertices.forEach(vertex => {
-                const blockPos = vertex.clone().normalize().multiplyScalar(this.radius);
-                const key = `${blockPos.x.toFixed(2)},${blockPos.y.toFixed(2)},${blockPos.z.toFixed(2)}`;
-                if (!blockPositions.has(key)) {
-                    blockPositions.add(key);
-                    const blockColor = colors[Math.floor(perlinNoise(vertex.x, vertex.y, vertex.z) * colors.length)];
-                    const blockMaterial = new THREE.MeshPhongMaterial({ color: blockColor, flatShading: true });
-                    const blockMesh = new THREE.Mesh(hexGeometry, blockMaterial);
-                    blockMesh.position.copy(blockPos);
-                    blockMesh.lookAt(this.group.position);
-                    blockMesh.rotateX(Math.PI / 2);
-                    this.group.add(blockMesh);
-                    this.blocks.push(blockMesh);
-                }
-            });
-            logDebug('Planetoid generated successfully.');
-        } catch (e) {
-            logDebug(`Error generating planetoid: ${e.message}`);
-        }
-    }
-}
-// 2.00.04 - Create a single planetoid for testing
-logDebug('Creating planetoid instance...');
-const testPlanet = new Planetoid(100, 2, new THREE.Vector3(0, 0, 0));
+// - - - >> 2.00 - Placeholder Geometry and Scene Objects
+// 2.00.00
+const geometry = new THREE.BoxGeometry(10, 10, 10);
+const material = new THREE.MeshPhongMaterial({ color: 0x8A2BE2 });
+const cube = new THREE.Mesh(geometry, material);
+cube.position.set(0, 0, -50);
+scene.add(cube);
+logDebug('Placeholder cube added to scene.');
 
 // - - - >> 3.00 - Lighting, Materials, and Post-Processing
 // 3.00.00
@@ -193,7 +141,7 @@ const player = {
     jetpackSpeed: 1.0,
     jetpackAcceleration: 0.05,
     jumpVelocity: 1.5,
-    position: new THREE.Vector3(0, testPlanet.radius + 5, 0),
+    position: new THREE.Vector3(0, 0, 0),
     velocity: new THREE.Vector3(),
     isGrounded: false
 };
@@ -277,101 +225,42 @@ window.addEventListener('touchmove', (event) => {
 const jumpButton = document.getElementById('jump-button');
 const jetpackButton = document.getElementById('jetpack-button');
 let jetpackActive = false;
-// 6.00.01 - Jump listener
+// 6.00.01
 if (jumpButton) {
   jumpButton.addEventListener('click', () => {
-      if (player.isGrounded) {
-          logDebug('Player jump initiated.');
-          const up = player.position.clone().sub(testPlanet.group.position).normalize();
-          player.velocity.add(up.multiplyScalar(player.jumpVelocity));
-          player.isGrounded = false;
-      }
+      logDebug('Jump not functional with placeholder.');
   });
 }
-// 6.00.02 - Jetpack listeners
+// 6.00.02
 if (jetpackButton) {
   jetpackButton.addEventListener('touchstart', (event) => {
       event.preventDefault();
-      jetpackActive = true;
-      logDebug('Jetpack active.');
+      logDebug('Jetpack not functional with placeholder.');
   });
 }
 // 6.00.03
 if (jetpackButton) {
   jetpackButton.addEventListener('touchend', () => {
-      jetpackActive = false;
-      logDebug('Jetpack inactive.');
+      logDebug('Jetpack not functional with placeholder.');
   });
 }
 
 // - - - >> 7.00 - Game Loop and Rendering
 // 7.00.00
-const gravityForce = 0.05;
 let lastTime = 0;
 // 7.00.01
-function checkCollisions() {
-    if (!testPlanet || !testPlanet.group) return;
-    const playerRadialPosition = player.position.clone().sub(testPlanet.group.position);
-    const playerDistanceToCenter = playerRadialPosition.length();
-    const surfaceRadius = testPlanet.radius;
-    
-    // 7.00.02
-    if (playerDistanceToCenter - player.height / 2 <= surfaceRadius) {
-        player.position.copy(playerRadialPosition.normalize().multiplyScalar(surfaceRadius + player.height / 2).add(testPlanet.group.position));
-        player.velocity.set(0, 0, 0);
-        player.isGrounded = true;
-    }
-}
-// 7.00.03
 function animate(time) {
     requestAnimationFrame(animate);
     const deltaTime = (time - lastTime) / 1000;
     lastTime = time;
 
-    // 7.00.04 - Check if Three.js is initialized
+    // 7.00.02
     if (!renderer || !camera) {
         logDebug('Renderer or camera not initialized. Skipping frame.');
         return;
     }
 
-    // 7.00.05
-    const up = player.position.clone().sub(testPlanet.group.position).normalize();
-    const forward = camera.getWorldDirection(new THREE.Vector3());
-    const right = new THREE.Vector3().crossVectors(forward, up).normalize();
-    // 7.00.06
-    const moveDirection = new THREE.Vector3();
-    if (moveJoystickActive) {
-        const joystickVector = new THREE.Vector2().subVectors(moveTouch, moveJoystickCenter).normalize();
-        moveDirection.add(right.clone().multiplyScalar(joystickVector.x));
-        moveDirection.add(forward.clone().multiplyScalar(joystickVector.y));
-        moveDirection.normalize().multiplyScalar(player.speed);
-    }
-    // 7.00.07
-    player.position.add(moveDirection);
-    // 7.00.08
-    if (lookJoystickActive) {
-        const dx = lookTouch.x - lookJoystickCenter.x;
-        const dy = lookTouch.y - lookJoystickCenter.y;
-        camera.rotateOnAxis(up, -dx * player.rotationSpeed);
-        camera.rotateOnAxis(right, -dy * player.rotationSpeed);
-        const tempQuaternion = new THREE.Quaternion().setFromUnitVectors(up, camera.up);
-        camera.quaternion.multiplyQuaternions(tempQuaternion, camera.quaternion);
-    }
-    // 7.00.09
-    if (jetpackActive) {
-        player.velocity.add(up.clone().multiplyScalar(player.jetpackAcceleration));
-        if (player.velocity.length() > player.jetpackSpeed) {
-            player.velocity.normalize().multiplyScalar(player.jetpackSpeed);
-        }
-    } else {
-        const gravity = up.clone().negate().multiplyScalar(gravityForce);
-        player.velocity.add(gravity);
-    }
-    // 7.00.10
-    player.position.add(player.velocity);
-    checkCollisions();
-    // 7.00.11
-    camera.position.copy(player.position);
+    // 7.00.03
     renderer.render(scene, camera);
 }
 animate();
@@ -382,7 +271,7 @@ const loaderScreen = document.getElementById('loading-screen');
 const debugOutput = document.getElementById('debug-output');
 const versionDisplay = document.getElementById('version-display');
 if (versionDisplay) {
-    versionDisplay.textContent = GAME_VERSION;
+    versionDisplay.textContent = 'Planetoid v.06 Alpha';
 }
 // 8.00.01
 function logDebug(message) {
@@ -412,4 +301,4 @@ setTimeout(() => {
 }, 5000);
 
 // https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js
-// Planetoid v.04 Alpha
+// Planetoid v.06 Alpha

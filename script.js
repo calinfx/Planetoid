@@ -15,31 +15,42 @@
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
 
 // 1.00.00
-const GAME_VERSION = 'Planetoid v.01 alpha';
+const GAME_VERSION = 'Planetoid v.02 Alpha';
 const scene = new THREE.Scene();
+let camera, renderer;
 
-// 1.00.01
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
-camera.rotation.order = "YXZ";
+// 1.00.01 - New init function
+function init() {
+    try {
+        logDebug('Initializing Three.js scene...');
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.rotation.order = "YXZ";
 
-// 1.00.02
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        logDebug('Renderer created successfully.');
 
-// 1.00.03
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-document.body.style.margin = '0';
-document.body.style.overflow = 'hidden';
+        document.body.style.margin = '0';
+        document.body.style.overflow = 'hidden';
 
-// 1.00.04
-scene.background = new THREE.Color(0x0a001a);
+        scene.background = new THREE.Color(0x0a001a);
+        logDebug('Scene background set.');
 
-// 1.00.05
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    } catch (e) {
+        logDebug(`Initialization failed: ${e.message}`);
+        console.error('Initialization failed:', e);
+    }
+}
+
+// 1.00.02 - Call init() at the start
+init();
 
 // - - - >> 2.00 - Planetoid Class Definition and Generation
 // 2.00.00 - A simple Perlin noise function for height variation
@@ -133,19 +144,24 @@ for (let i = 0; i < 12; i++) {
     const slot = document.createElement('div');
     slot.textContent = i + 1;
     slot.dataset.slotIndex = i;
-    inventoryUI.appendChild(slot);
+    if (inventoryUI) {
+      inventoryUI.appendChild(slot);
+    }
     inventorySlots.push(slot);
     slot.addEventListener('click', () => {
         selectSlot(parseInt(slot.dataset.slotIndex));
     });
 }
 // 4.00.03
-inventoryToggleButton.addEventListener('click', () => {
-    const isVisible = inventoryUI.style.display === 'grid';
-    inventoryUI.style.display = isVisible ? 'none' : 'grid';
-});
+if (inventoryToggleButton) {
+  inventoryToggleButton.addEventListener('click', () => {
+      const isVisible = inventoryUI.style.display === 'grid';
+      inventoryUI.style.display = isVisible ? 'none' : 'grid';
+  });
+}
 // 4.00.04
 function updateInventoryUI() {
+  if (!inventorySlots) return;
     inventorySlots.forEach((slotElement, index) => {
         if (index === activeSlot) {
             slotElement.style.borderColor = '#00FFFF';
@@ -257,25 +273,31 @@ const jumpButton = document.getElementById('jump-button');
 const jetpackButton = document.getElementById('jetpack-button');
 let jetpackActive = false;
 // 6.00.01 - Jump listener
-jumpButton.addEventListener('click', () => {
-    if (player.isGrounded) {
-        logDebug('Player jump initiated.');
-        const up = player.position.clone().sub(testPlanet.group.position).normalize();
-        player.velocity.add(up.multiplyScalar(player.jumpVelocity));
-        player.isGrounded = false;
-    }
-});
+if (jumpButton) {
+  jumpButton.addEventListener('click', () => {
+      if (player.isGrounded) {
+          logDebug('Player jump initiated.');
+          const up = player.position.clone().sub(testPlanet.group.position).normalize();
+          player.velocity.add(up.multiplyScalar(player.jumpVelocity));
+          player.isGrounded = false;
+      }
+  });
+}
 // 6.00.02 - Jetpack listeners
-jetpackButton.addEventListener('touchstart', (event) => {
-    event.preventDefault();
-    jetpackActive = true;
-    logDebug('Jetpack active.');
-});
+if (jetpackButton) {
+  jetpackButton.addEventListener('touchstart', (event) => {
+      event.preventDefault();
+      jetpackActive = true;
+      logDebug('Jetpack active.');
+  });
+}
 // 6.00.03
-jetpackButton.addEventListener('touchend', () => {
-    jetpackActive = false;
-    logDebug('Jetpack inactive.');
-});
+if (jetpackButton) {
+  jetpackButton.addEventListener('touchend', () => {
+      jetpackActive = false;
+      logDebug('Jetpack inactive.');
+  });
+}
 
 // - - - >> 7.00 - Game Loop and Rendering
 // 7.00.00
@@ -283,6 +305,7 @@ const gravityForce = 0.05;
 let lastTime = 0;
 // 7.00.01
 function checkCollisions() {
+    if (!testPlanet || !testPlanet.group) return;
     const playerRadialPosition = player.position.clone().sub(testPlanet.group.position);
     const playerDistanceToCenter = playerRadialPosition.length();
     const surfaceRadius = testPlanet.radius;
@@ -299,11 +322,18 @@ function animate(time) {
     requestAnimationFrame(animate);
     const deltaTime = (time - lastTime) / 1000;
     lastTime = time;
-    // 7.00.04
+
+    // 7.00.04 - Check if Three.js is initialized
+    if (!renderer || !camera) {
+        logDebug('Renderer or camera not initialized. Skipping frame.');
+        return;
+    }
+
+    // 7.00.05
     const up = player.position.clone().sub(testPlanet.group.position).normalize();
     const forward = camera.getWorldDirection(new THREE.Vector3());
     const right = new THREE.Vector3().crossVectors(forward, up).normalize();
-    // 7.00.05
+    // 7.00.06
     const moveDirection = new THREE.Vector3();
     if (moveJoystickActive) {
         const joystickVector = new THREE.Vector2().subVectors(moveTouch, moveJoystickCenter).normalize();
@@ -311,9 +341,9 @@ function animate(time) {
         moveDirection.add(forward.clone().multiplyScalar(joystickVector.y));
         moveDirection.normalize().multiplyScalar(player.speed);
     }
-    // 7.00.06
-    player.position.add(moveDirection);
     // 7.00.07
+    player.position.add(moveDirection);
+    // 7.00.08
     if (lookJoystickActive) {
         const dx = lookTouch.x - lookJoystickCenter.x;
         const dy = lookTouch.y - lookJoystickCenter.y;
@@ -322,7 +352,7 @@ function animate(time) {
         const tempQuaternion = new THREE.Quaternion().setFromUnitVectors(up, camera.up);
         camera.quaternion.multiplyQuaternions(tempQuaternion, camera.quaternion);
     }
-    // 7.00.08
+    // 7.00.09
     if (jetpackActive) {
         player.velocity.add(up.clone().multiplyScalar(player.jetpackAcceleration));
         if (player.velocity.length() > player.jetpackSpeed) {
@@ -332,10 +362,10 @@ function animate(time) {
         const gravity = up.clone().negate().multiplyScalar(gravityForce);
         player.velocity.add(gravity);
     }
-    // 7.00.09
+    // 7.00.10
     player.position.add(player.velocity);
     checkCollisions();
-    // 7.00.10
+    // 7.00.11
     camera.position.copy(player.position);
     renderer.render(scene, camera);
 }
@@ -346,7 +376,9 @@ animate();
 const loaderScreen = document.getElementById('loading-screen');
 const debugOutput = document.getElementById('debug-output');
 const versionDisplay = document.getElementById('version-display');
-versionDisplay.textContent = GAME_VERSION;
+if (versionDisplay) {
+    versionDisplay.textContent = GAME_VERSION;
+}
 // 8.00.01
 function logDebug(message) {
     if (debugOutput) {
@@ -369,7 +401,9 @@ loadingManager.onLoad = function () {
 logDebug('Initializing game...');
 setTimeout(() => {
     logDebug('Forcing loader hide. Game should be running.');
-    loaderScreen.style.display = 'none';
+    if (loaderScreen) {
+        loaderScreen.style.display = 'none';
+    }
 }, 5000);
 
 // https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js

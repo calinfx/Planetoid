@@ -1,4 +1,4 @@
-// Planetoid v.03 Alpha
+// Planetoid v.04 Alpha
 /*
     Table of Contents:
     1.00 - Initialization and Scene Setup
@@ -15,13 +15,18 @@
 import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
 
 // 1.00.00
-const GAME_VERSION = 'Planetoid v.03 Alpha';
+const GAME_VERSION = 'Planetoid v.04 Alpha';
 const scene = new THREE.Scene();
 let camera, renderer;
 
 // 1.00.01 - New init function
 function init() {
     try {
+        const loaderTitle = document.getElementById('loader-title');
+        if (loaderTitle) {
+          loaderTitle.textContent = `Loading ${GAME_VERSION}...`;
+        }
+
         logDebug(`${GAME_VERSION} loading...`);
         camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
         camera.rotation.order = "YXZ";
@@ -407,4 +412,4 @@ setTimeout(() => {
 }, 5000);
 
 // https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js
-// Planetoid v.03 Alpha
+// Planetoid v.04 Alpha
